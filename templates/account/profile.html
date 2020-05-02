@@ -1,0 +1,121 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+    {% include '../include/left_side.html' %}
+    <div class = "col-md-10 pt-3">
+    	<div class = "row">
+        	<div class = "col-md-2">
+        		<img src="{{ user.user_data.image.url }}" width="100%" alt="Profile foto" class="img-thumbnail">
+        		<a href = "{% url 'account_logout' %}" class = "btn btn-sm btn-danger btn-block">Logout</a>
+        	</div>
+        	<div class = "col-md-4">
+        		<h4>
+        			<b> {{ user.get_full_name }}</b>
+
+        			{% if user.user_data.verified %}
+        				<i class = "h6 fas fa-check-circle" title = "Verified user"></i>
+        			{% endif %}
+        		</h4>
+        		{% if user.user_data.about %}
+            		<p> {{ user.user_data.about | safe }}</p>
+            	{% else %}
+                	<p>
+                		<em>(about me)</em>
+                	</p>
+                {% endif %}
+            	<p>
+        			<a href = "{% url 'edit' %}">Edit</a>
+        		</p>
+        	</div>
+        	<div class = "col-md-6 small">
+        		<ul class = "list-unstyled">
+        			<li class = "my-3">
+        				<i class = "fas fa-user mr-2"></i>{{ user.username }}
+        			</li>
+        			<li class = "my-3">
+        				<i class = "fas fa-envelope mr-2"></i>{{ user.email }}
+            		</li>
+            		<li class = "my-3">
+                		{% if user.user_data.web_site %}
+                			<i class = "fas fa-link mr-2"></i>
+                			<a href = "{{ user.user_data.web_site }}" target="_blank"> {{ user.user_data.web_site }}</a> 
+                		{% endif %}
+                	</li>
+                	<li class = "my-3">
+                		{% if user.user_data.github %}
+                			<i class = "fab fa-github mr-2"></i>
+                			<a href = "{{ user.user_data.github }}" target="_blank">{{ user.user_data.github }}</a>
+                		{% endif %}
+                	</li>
+                	<li class = "my-3">
+            			<i class = "fas fa-clock mr-2"></i>Registered {{ user.date_joined | naturaltime }}
+            		</li>
+        		</ul>
+        	</div>
+        </div>
+        <div class = "row my-4">
+        	<div class = "col-md-2">
+        		<h5>Activity</h5>
+        		<hr>
+        		<p class = "d-flex justify-content-between small">
+        			Questions: <b> {{ user.user_data.question.count }}</b>
+        		</p>
+        		<p class = "d-flex justify-content-between small">
+        			Answers: <b> {{ user.user_data.answers }}</b>
+        		</p>
+        		<p class = "d-flex justify-content-between small">
+        			Reputation: <b> {{ user.user_data.reputation }}</b>
+        		</p>
+        	</div>
+        	<div class = "col-md-10">
+        		<h5>Top posts ({{ user.user_data.question.count }})</h5>
+        		<hr>
+        		{% for datas in user.user_data.question.all %}
+				<div class="row py-3">
+			        <div class="col-md-2">
+			            <ul class = "vandpoint list-inline list-unstyled small">
+                            <li class="list-inline-item">
+                                <center>
+                                    <span class = "font-weight-bold">{{ datas.vote_point }}</span>
+                                    points
+                                </center>
+                            </li>
+                            <li class="list-inline-item">
+                                <center>
+                                    <span class = "font-weight-bold">{{ datas.answer.count }} </span>
+                                    answers
+                                </center>
+                            </li>
+                        </ul>
+			        </div>
+			        <div class="col-md-10">
+			            <p>
+			                <a href="{% url 'questions:question_datas' datas.id %}" class = "text-decoration-none">
+			                    {{ datas.title }}
+			                </a>
+			            </p>
+			            <div class="row">
+			                <div class="col-7">
+			                    {% for tags in datas.tags.all %}
+
+			                        <a href = "{% url 'questions:tag_question' tags %}" class = "badge badge-dark">{{ tags }}</a>
+
+			                    {% endfor %}
+			                </div>
+			                <div class="col-5"> 
+			                    <small>Asked {{ datas.date | naturaltime }}</small>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+				<hr>
+				{% endfor %}
+
+        	</div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

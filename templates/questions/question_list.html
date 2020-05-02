@@ -1,0 +1,42 @@
+{% load humanize %}
+
+{% for datas in data %}
+    <div class="row border-bottom question_list p-2">
+        <div class="col-md-2" onclick = "window.location.href = '/question/{{ datas.id }}/'">
+            <ul class = "vandpoint list-inline list-unstyled small">
+                <li class="list-inline-item">
+                    <center>
+                        <span class = "font-weight-bold">{{ datas.vote_point }}</span>
+                        points
+                    </center>
+                </li>
+                <li class="list-inline-item">
+                    <center>
+                        <span class = "font-weight-bold">{{ datas.answer.count }} </span>
+                        answers
+                    </center>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            <p>
+                <a href="{% url 'questions:question_datas' datas.id %}" class="text-decoration-none">
+                    {{ datas.title }}
+                </a>
+            </p>
+            <div class="float-left">
+                {% for tags in datas.tags.all %}
+
+                    <a href = "{% url 'questions:tag_question' tags %}" class = "badge badge-dark">{{ tags }}</a>
+
+                {% endfor %}
+            </div>
+            <div class="float-right"> 
+                <small>Asked
+                    {{ datas.date | naturaltime }}
+                    <a href="{% url 'get_user' datas.user.id %}" class = "text-decoration-none">{{ datas.user.username }} </a>
+                </small>
+            </div>
+        </div>
+    </div>
+{% endfor %}

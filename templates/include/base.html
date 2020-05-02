@@ -1,0 +1,88 @@
+{% load static %}
+{% load notifications_tags %}
+{% notifications_unread  as unread_count %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>TheCode</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+		<meta name="google-signin-client_id" content="622392996852-pt65qors749r4s76q3faoj042mh0am39.apps.googleusercontent.com">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script src="https://kit.fontawesome.com/8cb64c196b.js" crossorigin="anonymous"></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		{% if user.is_authenticated == True %}
+		<script src="{% static 'js/js.js' %}"></script>
+		{% endif %}
+		<script src="{% static 'code-prettify/run_prettify.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'code-prettify/prettify.css' %}">
+		<link href="{% static 'css/blog-post.css' %}" rel="stylesheet">
+
+		{% block page_down_static %}
+		{% endblock page_down_static %}
+	</head>
+
+<body>
+	<div id="fb-root"></div>
+	<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=365043711004269&autoLogAppEvents=1"></script>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm fixed-top">
+	<div class = "container d-flex justify-content-between">
+		<a href = "{% url 'main_page' %}" class = "text-decoration-none">
+			<img src="{% static 'img/thecode.png' %}" height="20px;">
+		</a>
+		<div class = "mx-5 collapse navbar-collapse">
+			<div  style = "width: 100%;">
+				<form class="" action = "#" method="get">
+					<input class="form-control form-control-sm" type="text" name = "qu" placeholder="Search">
+				</form>
+			</div>
+		</div>
+		<div class="mx-3">
+			{% if user.is_authenticated == False %}
+			<a class="btn btn-sm btn-info mx-1" href="{% url 'account_login' %}">Log In</a>
+			<a class="btn btn-sm btn-success mx-1" href="{% url 'account_signup' %}">Sign Up</a>
+			{% else %}
+				<div class="btn-group">
+					<button class=" btn btn-sm btn-dark dropdown-toggle" id = "notify_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-inbox"></i>
+						{% if unread_count %}
+						    <small>{{ unread_count }}</small>
+						{% endif %}
+					</button>
+					<div class="dropdown-menu dropdown-menu-right">
+						<h5 align="center">Notifications</h5>
+						{% for noti in user.notifications.all %}
+							<div class = "dropdown-items small">
+								<a href = "{% url 'get_user' noti.actor_object_id %}" class = "text-decoration-none">
+								From <b>{{ noti.recipient.get_full_name }}</b>
+								</a>
+								<div class = "d-flex justify-content-between my-2">
+									<div>
+										{{ noti.verb }}
+									</div>
+									<span>
+										{{ noti.timestamp | naturaltime }}
+									</snap>
+								</div>
+							</div>
+						{% endfor %}
+						<a href = "{% url 'notifications:all' %}" class = "mx-3 small">See all</a>
+					</div>
+				</div>
+				<a class="btn btn-sm btn-dark" href = "{% url 'profile' %}">
+					<i class = "fa fa-user"></i>
+				</a>
+			{% endif %}
+		</div>
+	</div>
+</nav>
+<div class = "container my-5">
+{% block content %}
+{% endblock content %}
+</div>
+{% include '../include/footer.html' %}

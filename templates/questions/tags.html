@@ -1,0 +1,20 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+   {% include 'include/left_side.html' %}
+    <div class = "col-md-8">
+        <div class = "row border-bottom">
+        	<div class = "col-12 p-2 d-flex justify-content-between">
+        		<h5 class = "m-0"> Tagged questions</h5>
+	            <span class="float-right">
+	                <a href = "{% url 'questions:ask_question' %}" class = "btn btn-sm btn-primary">Ask question</a>
+	            </span>
+	        </div>
+        </div>
+		{% include 'questions/question_list.html' %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load notifications_tags %}
+{% load humanize %}
+
+{% block content %}
+	<div class="row">
+		{% include 'include/left_side.html' %}
+	    <div class = "col-md-8">
+	    	<div class = "row border-bottom">
+	    		<div class = "col-12 p-2">
+	    			<h5 class = "m-0">Notifications</h5>
+	    		</div>
+	    	</div>
+	    	{% for noti in user.notifications.all %}
+				<div class = "alert alert-light rounded-0 my-2">
+					<a href = "{% url 'get_user' noti.actor_object_id %}" class = "text-decoration-none">
+					From <b>{{ noti.recipient.get_full_name }}</b>
+					</a>
+					<div class = "d-flex justify-content-between small my-2">
+						<div class = "">
+							{{ noti.verb }}
+						</div>
+						<i>
+							{{ noti.timestamp | naturaltime }}
+						</i>
+					</div>
+				</div>
+			{% endfor %}
+	    </div>
+	</div>
+{% endblock content %}

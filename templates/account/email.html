@@ -1,0 +1,90 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="row">
+	{% include '../include/left_side.html' %}
+    <div class = "col-md-8">
+    	<div class = "row border-bottom">
+    		<div class = "col-12 p-2">
+    			<h5 class = "m-0">E-mail Addresses</h5>
+    		</div>
+    	</div>
+    	<div class = "row py-3 border-bottom">
+    		<div class = "col-12">
+	    	{% if user.emailaddress_set.all %}
+	    	<h6>The following e-mail addresses are associated with your account:</h6>
+
+	    	<form action="{% url 'account_email' %}" method="post">
+				{% csrf_token %}
+				<div class="bg-light p-2">
+				{% for emailaddress in user.emailaddress_set.all %}
+					<div class="d-flex">
+						<label class = "flex-grow-1">
+						<input id="email_radio_{{forloop.counter}}" type="radio" name="email" {% if emailaddress.primary or user.emailaddress_set.count == 1 %}checked="checked"{%endif %} value="{{emailaddress.email}}"/>
+						<label for="email_radio_{{forloop.counter}}">{{ emailaddress.email }}</label>
+						</label>
+						{% if emailaddress.primary %}
+					    	<span class="primary">Primary</span>
+					    {% endif %}
+						{% if emailaddress.verified %}
+					    	<span class="verified ml-3">Verified </span>
+					    {% else %}
+					    	<span class="unverified">Unverified</span>
+					    {% endif %}
+					</div>
+				{% endfor %}
+				</div>
+				<button class="btn btn-sm btn-primary" type="submit" name="action_primary">Make Primary</button>
+				<button class="btn btn-sm btn-primary" type="submit" name="action_send">Re-send Verification</button>
+				<button class="btn btn-sm btn-danger" type="submit" name="action_remove">Remove</button>
+				{% if messages %}
+				<div>
+				{% for message in messages %}
+					<div class = "alert alert-warning my-2">
+						{{ message }}
+					</div>
+				{% endfor %}
+				</div>
+				{% endif %}
+			</form>
+	    	{% else %}
+	    	<p>
+	    		<strong>Warning:</strong>
+	    		You currently do not have any e-mail address set up. You should really add an e-mail address so you can receive notifications, reset your password, etc.
+	    	</p>
+	    	{% endif %}
+	    	</div>
+	    </div>
+	    <div class = "row py-3">
+	    	<div class = "col-12">
+		    	<h5>Add E-mail Address</h5>
+			    <form method="post" action="{% url 'account_email' %}">
+			        {% csrf_token %}
+			        <div class="form-group">
+				       	{% for field in form %}
+				       		{% render_field field class="form-control" %}
+				       	{% endfor %}
+				    </div>
+				    <button name="action_add" type="submit" class = "btn btn-sm btn-primary">Add E-mail</button>
+			    </form>
+			</div>
+	    </div>
+    </div>
+    {% include '../include/right_side.html' %}
+<script type="text/javascript">
+(function() {
+  var message = "Do you really want to remove the selected e-mail address?";
+  var actions = document.getElementsByName('action_remove');
+  if (actions.length) {
+    actions[0].addEventListener("click", function(e) {
+      if (! confirm(message)) {
+        e.preventDefault();
+      }
+    });
+  }
+})();
+</script>
+</div>
+{% endblock content%}

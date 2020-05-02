@@ -1,0 +1,41 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block page_down_static %}
+    {{ form.media }}
+{% endblock page_down_static %}
+
+{% block content %}
+    <div class="row">
+        {% include '../include/left_side.html' %}
+        <div class = "col-md-8">
+            <div class = "row border-bottom">
+                <div class = "col-12 p-2">
+                    <h5 class = "m-0">Ask a question</h5>
+                </div>
+            </div>
+            <form action = "{% url 'questions:ask_question' %}" method="post" class = "my-3">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        <h6 class = "font-weight-bold">{{ field.label }}</h6>
+                        {% render_field field class="form-control" %}
+                        {% for error in field.errors %}
+                            <p>
+                                <div class="alert alert-danger">
+                                    {{ error }}
+                                </div>
+                            </p>
+                        {% endfor %}
+
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button class = "btn btn-primary" type = "submit">Send</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

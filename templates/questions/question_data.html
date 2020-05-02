@@ -1,0 +1,137 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load question_extras %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block page_down_static %}
+{{ form.media }}
+{% endblock page_down_static %}
+
+{% block content %}
+<div class="row">
+  {% include 'include/left_side.html' %}
+  <div class = "col-md-8">
+    <div class = "row border-bottom">
+      <div class = "col-12 d-flex justify-content-between p-2">
+        <div class = "small">
+          <h4>{{ data.title }}</h4>
+          <b>Asked: </b>{{ data.date | naturaltime }} |
+          <a href = "{% url 'get_user' data.user.id %}" class = "text-decoration-none">
+            {{ data.user.get_full_name }}
+          </a>
+        </div>
+        <div>
+          <a href = "{% url 'questions:ask_question' %}" class = "btn btn-sm btn-primary">Ask question</a>
+        </div>
+      </div>
+    </div>
+    <div class = "row border-bottom py-3 mb-3">
+      <div class = "col-1 p-0">
+        <center>
+          <ul class = "list-unstyled">
+            <li>
+              <i class = "fas fa-chevron-up vote_and_fav" id = "vote_up" title = "This question is useful"></i>
+            </li>
+            <li>
+              <strong id = "vote_score">{{ data.vote_point }}</strong>
+            </li>
+            <li>
+              <i class = "fas fa-chevron-down vote_and_fav" id = "vote_down" title = "This question is not useful"></i>
+            </li>
+            <li>
+              {% if data in user.user_data.fav_question.all %}
+                <i class = "fas fa-star vote_and_fav" id = "favourite" title = "Added"></i>
+              {% else %}
+                <i class = "far fa-star vote_and_fav" id = "favourite" title = "Add to favourite question"></i>
+              {% endif %}
+            </li>
+          </ul>
+        </center>
+      </div>
+      <div class = "col-11">
+        <div class = "mb-3">
+{{ data.question_text | from_markdown | safe }}
+        </div>
+        <div class = "mt-3 d-flex justify-content-between">
+          <div>
+              {% for tags in data.tags.all %}
+                <a href = "{% url 'questions:tag_question' tags %}" class = "badge badge-dark text-decoration-none">{{ tags }}</a>
+              {% endfor %}
+          </div>
+          <div class="asked_user_info">
+            <div class = "user_in_qu_span">asked {{ data.date }}</div>
+            <a href = "{% url 'get_user' data.user.id %}" class = "text-decoration-none">
+              <img src = "{{ data.user.user_data.image.url }}" class = "asked_user_img">
+              {{ data.user.get_full_name }}
+            </a>
+            <div>Reputation score {{ data.user.user_data.reputation }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h5>{{ data.answer.count }} answers</h5>
+    {% for answer in data.answer.all %}
+      <div class = "row">
+        <div class = "col-1 p-0">
+          <center>
+            <ul class = "list-unstyled">
+              <li>
+                <i class = "fas fa-chevron-up vote_and_fav" name = "vote_up_to_answer" id = "{{ answer.id }}" title = "This answer is useful"></i>
+              </li>
+              <li>
+                <strong name = "{{ answer.id }}" title = "{{ answer.voters.count }} user voted">{{ answer.vote_point }}</strong>
+              </li>
+              <li>
+                <i class = "fas fa-chevron-down vote_and_fav" name = "vote_down_to_answer" id = "{{ answer.id }}" title = "This answer is not useful"></i>
+              </li>
+            </ul>
+          </center>
+        </div>
+        <div class = "col-11">
+{{ answer.answer_text | from_markdown | safe }}
+        </div>
+      </div>
+      <div class = "mt-3 d-flex justify-content-between">
+        <div></div>
+        <div class="asked_user_info">
+          <div class = "user_in_qu_span">asked {{ answer.date }}</div>
+          <a href = "{% url 'get_user' answer.user.id %}" class = "text-decoration-none p-0">
+            <img src = "{{ answer.user.user_data.image.url }}" class = "asked_user_img">
+            <div>{{ answer.user.get_full_name }}</div>
+          </a>
+          <div>Reputation score {{ answer.user.user_data.reputation }}</div>
+        </div>
+      </div>
+      <hr>
+    {% endfor %}
+    <h5>Your Answer</h5>
+    <div class = "row border-bottom mb-5">
+      <div class = "col-md-12">
+        <div class="my-3">
+          {% if user.is_authenticated == True %}
+          <form method="POST" action = "/question/{{ data.id }}/">
+            {% csrf_token %}
+            {% for field in form %}
+              {% render_field field class="form-control" %}
+            {% endfor %}	
+            <button class = "btn btn-primary">Send</button>
+          </form>
+          {% else %}
+              <h4>Sign up or <a href = "{% url 'account_login' %}" class="text-decoration-none">Log in</a></h4>
+              <a class = "btn btn-block btn-light border" href = "/accounts/google/login/">
+                  <svg aria-hidden="true" class="svg-icon native iconGoogle" width="18" height="18" viewBox="0 0 18 18"><g><path d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z" fill="#4285F4"></path><path d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z" fill="#34A853"></path><path d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z" fill="#FBBC05"></path><path d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.3z" fill="#EA4335"></path></g></svg>
+                  <small> Google</small>
+              </a>
+              <a class = "btn btn-block btn-primary" href = "/accounts/facebook/login/">
+                  <svg aria-hidden="true" class="svg-icon iconFacebook" width="18" height="18" viewBox="0 0 18 18"><path d="M1.88 1C1.4 1 1 1.4 1 1.88v14.24c0 .48.4.88.88.88h7.67v-6.2H7.46V8.4h2.09V6.61c0-2.07 1.26-3.2 3.1-3.2.88 0 1.64.07 1.87.1v2.16h-1.29c-1 0-1.19.48-1.19 1.18V8.4h2.39l-.31 2.42h-2.08V17h4.08c.48 0 .88-.4.88-.88V1.88c0-.48-.4-.88-.88-.88H1.88z" fill="#fff"></path></svg>
+                  <small> Facebook</small>
+              </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'include/right_side.html' %}
+</div>
+{% endblock content %}

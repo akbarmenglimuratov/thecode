@@ -1,0 +1,48 @@
+<div class = "col-md-2 border-right pr-0 pt-2">
+	<ul class = "menu list-unstyled">
+	<li>
+		<a class="text-decoration-none" href = "{% url 'questions:question' %}">	
+			<div class = "side_menu {% if request.path == '/' or 'question' in request.path %}active_menu{% endif %}">
+				Questions
+			</div>
+		</a>
+	</li>
+	<li>
+		<a class="text-decoration-none" href = "{% url 'tag_list' %}">
+			<div class = "side_menu {% if request.path == '/tags/'%}active_menu{% endif %}">
+				Tags
+			</div>
+		</a>
+	</li>
+	<li>
+		<a class="text-decoration-none" href = "{% url 'user_list' %}">
+			<div class = "side_menu {% if 'user' in request.path %}active_menu{% endif %}">	
+				Users
+			</div>
+		</a>
+	</li>
+	<li>
+		{% if user.is_authenticated == True %}
+			<a class="text-decoration-none" id = "accounts_menu" style = "cursor: pointer;">
+				<div class = "side_menu {% if 'accounts' in request.path %}active_menu{% endif %}">	
+					Accounts
+				</div>
+			</a>
+			<div class = "ml-3 small" id = "accounts_menu_list" hidden>
+				<a class="text-decoration-none" href = "{% url 'profile' %}">
+					<div class = "side_menu">Profile</div>
+				</a>
+				<a class="text-decoration-none" href = "{% url 'edit' %}">
+					<div class = "side_menu">Edit</div>
+				</a>
+				<a class="text-decoration-none" href = "{% url 'account_email' %}">
+					<div class = "side_menu">Email</div>
+				</a>
+				<a class="text-decoration-none" href = "{% url 'account_change_password' %}">
+					<div class = "side_menu">Change password</div>
+				</a>
+			</div>
+		{% endif %}
+	</li>
+	</ul>
+</div>

@@ -1,0 +1,79 @@
+{% load static %}
+{% load notifications_tags %}
+{% live_notify_badge as notify_count %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Welcome to TheCode</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="google-signin-client_id" content="622392996852-pt65qors749r4s76q3faoj042mh0am39.apps.googleusercontent.com">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<link href="{% static 'css/style.css' %}" rel="stylesheet">
+		<script src="https://kit.fontawesome.com/8cb64c196b.js" crossorigin="anonymous"></script>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+	</head>
+
+<body>
+	<div id="fb-root"></div>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=365043711004269&autoLogAppEvents=1"></script>
+	<div class="navbar fixed-top navbar-dark bg-dark">
+		<div class="container">
+			<a href = "/" class = "text-decoration-none">
+				<i class = "fas fa-code"></i>
+				<img src="{% static 'img/thecode.png' %}" height="20px;">
+			</a>
+			<div class = "head_form">
+				<form class="form-inline" action = "#" method="get">
+					<input class="form-control form-control-sm" type="text" name = "qu" placeholder="Search">
+				</form>
+			</div>
+			<div class = "head_meta">
+				{% if user.is_authenticated == False %}
+					<div class="">
+						<a class="btn btn-sm btn-info" href="/accounts/login/">Войти</a>
+					</div>
+				{% else %}
+
+					<ul class = "user_profile_icon">
+						<li>
+							<div class="btn-group">
+								<button class=" btn btn-dark dropdown-toggle" id = "notify_button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<i class="fas fa-inbox"></i>
+									
+									{% if notify_count %}
+										{% live_notify_badge badge_class="badge" %}
+									{% endif %}
+								
+								</button>
+								<div class="dropdown-menu dropdown-menu-right p-3 notify">
+									<h5 align="center">Notifications</h5>
+									{% live_notify_list %}
+									{% for noti in user.notifications.all %}
+										<h6> From <a href = "/user/{{ noti.recipient }}/"> {{ noti.recipient }}</a></h6>
+										<small>
+											<div class = "row">
+												<div class = "col-md-8">
+													{{ noti.verb }}<br>
+												</div>
+												<div class = "col-md-4">
+													{{ noti.timestamp | naturaltime }}
+												</div>
+											</div>
+										</small>
+										<hr>
+									{% endfor %}
+									<small><a href = "/inbox/notifications/">See all</a></small>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a class="btn btn-dark" href = "/accounts/profile/"><i class = "fa fa-user"></i></a>
+						</li>
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+	</div>

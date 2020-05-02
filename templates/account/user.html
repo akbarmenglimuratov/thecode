@@ -1,0 +1,105 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+	{% include '../include/left_side.html' %}
+    <div class = "col-md-10 pt-3">
+    	<div class = "row">
+        	<div class = "col-md-3">
+        		<img src="{% static 'img/profile_photo_default.jpg'%}" width="100%" class="img-thumbnail">
+        	</div>
+        	<div class = "col-md-4">
+        		<h4>
+        			<b>{{ data.username.get_full_name }}</b>
+        			{% if data.verified %}
+        				<i class = "h6 fas fa-check-circle" title = "Verified user"></i>
+        			{% endif %}
+        		</h4>
+        		<ul class = "list-unstyled small">
+        			<li class = "my-3">
+            			<i class = "fas fa-user mr-2"></i>{{ data.username }} 
+        			</li>
+        			<li class = "my-3">
+                		{% if user.user_data.web_site %}
+                			<i class = "fas fa-link mr-2"></i>
+                			<a href = "{{ data.user_data.web_site }}"> {{ user.user_data.web_site }}</a>
+                		{% endif %}
+                	</li>
+            		<li class = "my-3"> 
+            			<i class = "fas fa-clock mr-2"></i>
+            			Registered {{ data.username.date_joined | naturaltime }}
+            		</li>
+            		<!-- <li class = "my-3"> 
+            			<i class = "fas fa-eye mr-2"></i>hitcount profile views 
+            		</li> -->
+                </ul>
+        	</div>
+        	<div class = "col-md-5">
+        		{% if data.username.user_data.about %}
+            		<h6 class = "border-bottom font-weight-bold">About</h6>
+            		<p> {{ user.user_data.about | safe }} </p>
+        		{% else %}
+        			<p class = "font-italic">(empty)</p>
+        		{% endif %}
+        	</div>
+        </div>
+        <div class = "row my-4">
+        	<div class = "col-md-2">
+                <h5 class = "px-2">Activity</h5>
+                <hr>
+        		<p class = "d-flex justify-content-between small">
+        			Questions: <b> {{ data.username.user_data.question.count }}</b>
+        		</p>
+        		<p class = "d-flex justify-content-between small">
+        			Answers: <b> {{ data.username.user_data.answers }} </b>
+        		</p>
+        		<p class = "d-flex justify-content-between small">
+        			Reputation: <b> {{ data.username.user_data.reputation }}</b>
+        		</p>
+        	</div>
+        	<div class = "col-md-10">
+        		<h5>Top posts ({{ data.username.user_data.question.count }})</h5>
+        		<hr>
+        		{% for datas in data.username.user_data.question.all %}
+				<div class="row py-2">
+			        <div class="col-md-3">
+			            <center>
+                            <ul class = "list-inline list-unstyled small">
+    			                <li class = "list-inline-item">
+    			                    <b>{{ datas.vote_point }}</b><br>points
+    			                </li>
+    			                <li class = "list-inline-item">
+    			                    <b>{{ datas.answer.count }}</b><br>answers
+    			                </li>
+    			            </ul>
+                        </center>
+			        </div>
+			        <div class="col-md-9">
+			            <p>
+			                <a href="/question/{{ datas.id }}/" class = "text-decoration-none">
+			                    {{ datas.title }}
+			                </a>
+			            </p>
+			            <div class="row">
+			                <div class="col-7">
+			                    {% for tags in datas.tags.all %}
+			                        <a href = "/question/tag/{{ tags }}/" class = "badge badge-dark">{{ tags }}</a>
+			                    {% endfor %}
+			                </div>
+                            <div class = "col-5">
+                                <small class = "float-right">Asked
+                                    {{ datas.date | naturaltime }}
+                                </small>
+                            </div>
+			            </div>
+			        </div>
+			    </div>
+				<hr>
+				{% endfor %}
+        	</div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

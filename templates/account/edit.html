@@ -1,0 +1,57 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<div class="row">
+    {% include 'include/left_side.html' %}
+    <div class = "col-md-8">
+    	<div class = "row border-bottom">
+        	<div class = "col-12 d-flex justify-content-between p-2">
+                <h5 class = "m-0">Edit your profile</h5>
+                <a href = "{% url 'profile' %}" class = "text-decoration-none">
+                    {{ user.get_full_name }}
+                </a>
+            </div>
+        </div>
+        <div class = "form-group py-3">
+            <h6>Public informations</h6>
+            <form action = "{% url 'edit' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class = "col-3">
+                        <img src = "{{ user.user_data.image.url }}" class = "img-thumbnail" alt="User_profile_picture">
+                        <input type = "file" name = "image" id = "id_image" hidden>
+                        <button class = "btn btn-block btn-sm btn-primary" type = "button" id = "img_upload">Change</button>
+                    </div>
+                    <div class = "col-9 d-flex flex-column">
+                        <span class = "font-weight-bold">Website link</span>
+                        <div class="input-group input-group-sm mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">
+                                    <i class = "fas fa-link"></i>
+                                </span>
+                            </div>
+                            <input type="text" name="web_site" id = "id_web_site" value="{{ user.user_data.web_site}}" class="form-control">
+                        </div>
+                        <span class = "font-weight-bold">Github link</span>
+                        <div class="input-group input-group-sm mb-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon3">
+                                    <i class = "fab fa-github"></i>
+                                </span>
+                            </div>
+                            <input type="text" name="github" id = "id_github" value="{{ user.user_data.github}}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <span class = "font-weight-bold">About me</span>
+                <textarea name = "about" class="form-control my-2" name = "about">{{ user.user_data.about }}</textarea>
+                <button class = "btn btn-primary" type = "submit">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

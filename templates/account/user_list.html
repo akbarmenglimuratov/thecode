@@ -1,0 +1,27 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+   {% include 'include/left_side.html' %}
+    <div class = "col-md-8">
+		<div class = "row border-bottom">
+            <div class = "col-12 p-2">
+                <h5 class = "m-0">Users</h5>
+            </div>
+        </div>
+        <div class="d-flex flex-row m-2">
+            {% for datas in data %}
+                <div class = "px-2">
+                    <img src="/media/{{ datas.image.name }}/" class = "rounded user_list_img">
+                </div>
+                <div>
+                    <a href = "/user/{{ datas.id }}" class = "text-decoration-none">{{ datas.username.get_full_name }}</a>
+                    <p><small>Reputation score {{ datas.reputation }}</small></p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

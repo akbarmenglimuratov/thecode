@@ -1,0 +1,26 @@
+{% extends '../include/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="row">
+  {% include 'include/left_side.html' %}
+  <div class = "col-md-8">
+    <div class = "row border-bottom">
+        <div class="col-12 p-2">
+          <h5 class="m-0">Tags</h5>
+        </div>
+    </div>
+    <div class = "p-3 d-flex align-content-start flex-wrap">
+      {% for tag in tags %}
+        <div class = "tag_data m-2 p-2 rounded">
+          <div>
+            <a href = "{% url 'questions:tag_question' tag.slug %}" class = "badge badge-dark">{{ tag }}</a>
+          </div>
+          <div class = "small">{{ tag.taggit_taggeditem_items.count }} questions</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
