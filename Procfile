@@ -1,1 +1,1 @@
-web: python manage.py runserver 84.54.122.14:8000
+web: gunicorn gettingstarted.wsgi
