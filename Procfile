@@ -1,1 +1,1 @@
-web: python thecode/manage.py runserver 84.54.122.14:$PORT
+web: python manage.py runserver 127.0.0.1:8000
