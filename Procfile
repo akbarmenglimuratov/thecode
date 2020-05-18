@@ -1,1 +1,1 @@
-web: python evilgeniuses.herokuapp.com/manage.py runserver 84.54.122.14:$PORT
+web: python thecode/manage.py runserver 84.54.122.14:$PORT
