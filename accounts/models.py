@@ -26,7 +26,7 @@ class User_data(models.Model):
 	about = models.TextField(default = '', blank = True)
 	image = models.ImageField(upload_to = 'profile_pic', default='default/profile_photo_default.jpg')
 
-	def save(self):
+	def save(self,*args, **kwargs):
 		#Opening the uploaded image
 		im = Image.open(self.image)
 
